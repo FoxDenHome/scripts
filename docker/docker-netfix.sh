@@ -42,7 +42,7 @@ fi
 IPV6_ULA_DEF_ROUTE="$(ip -6 route | grep 'default via fd' || true)"
 if [ ! -z "$IPV6_ULA_DEF_ROUTE" ]
 then
-    echo 'IPv6 ULA default route detected, deleting...'
+    echo -n 'IPv6 ULA default route detected, deleting! '
     ip -6 route del $IPV6_ULA_DEF_ROUTE
 fi
 
