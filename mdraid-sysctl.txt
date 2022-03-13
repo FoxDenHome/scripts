@@ -1,0 +1,7 @@
+# Default
+sysctl -w dev.raid.speed_limit_min=1000
+sysctl -w dev.raid.speed_limit_max=200000
+
+# Max
+sysctl -w dev.raid.speed_limit_min=999999999
+sysctl -w dev.raid.speed_limit_max=999999999
