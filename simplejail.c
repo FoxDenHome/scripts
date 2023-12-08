@@ -113,6 +113,7 @@ int main() {
     }
 
     if (chdir(cwd)) {
+        printf("chdir(%s)\n", cwd);
         perror("chdir_cwd");
         if (chdir("/")) {
             perror("chdir_root");
