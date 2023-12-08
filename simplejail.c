@@ -68,6 +68,9 @@ int main() {
         return 1;
     }
 
+    char cwdbuf[4096];
+    char* cwd = getcwd(cwdbuf, 4096);
+
     if (unshare(CLONE_NEWNS | CLONE_FS | CLONE_FILES)) {
         perror("unshare");
         return 1;
@@ -84,9 +87,6 @@ int main() {
         perror("chdir_jail");
         return 1;
     }
-
-    char cwdbuf[4096];
-    char* cwd = getcwd(cwdbuf, 4096);
 
     struct passwd *pw = getpwuid(uid);
 
@@ -112,13 +112,9 @@ int main() {
         return 1;
     }
 
-    if (chdir(cwd)) {
-        printf("chdir(%s)\n", cwd);
-        perror("chdir_cwd");
-        if (chdir("/")) {
-            perror("chdir_root");
-            return 1;
-        }
+    if (chdir(cwd) && chdir("/")) {
+        perror("chdir_root");
+        return 1;
     }
 
     if (setresgid(gid, gid, gid)) {
