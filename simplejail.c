@@ -10,6 +10,7 @@
 #include <errno.h>
 
 #define JAILDIR "/tmp/simplejail.root"
+#define SHELL "/bin/bash"
 
 // https://stackoverflow.com/questions/2336242/recursive-mkdir-system-call-on-unix
 static int mkdir_p(const char *path, int mode) {
@@ -122,7 +123,7 @@ int main() {
         return 1;
     }
 
-    execl("/bin/bash", "/bin/bash", NULL);
+    execl(SHELL, SHELL, NULL);
 
     return 0;
 }
