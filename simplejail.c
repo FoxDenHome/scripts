@@ -85,6 +85,9 @@ int main() {
         return 1;
     }
 
+    char cwdbuf[4096];
+    char* cwd = getcwd(cwdbuf, 4000);
+
     struct passwd *pw = getpwuid(uid);
 
     mount_bind("/bin");
@@ -109,7 +112,7 @@ int main() {
         return 1;
     }
 
-    if (chdir("/")) {
+    if (chdir(cwd) && chdir("/")) {
         perror("chdir_root");
         return 1;
     }
