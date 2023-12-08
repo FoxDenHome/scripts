@@ -85,8 +85,8 @@ int main() {
         return 1;
     }
 
-    char cwdbuf[4096];
-    char* cwd = getcwd(cwdbuf, 4000);
+    char cwdbuf[PATH_MAX];
+    char* cwd = getcwd(cwdbuf, PATH_MAX);
 
     struct passwd *pw = getpwuid(uid);
 
@@ -112,9 +112,11 @@ int main() {
         return 1;
     }
 
-    if (chdir(cwd) && chdir("/")) {
-        perror("chdir_root");
-        return 1;
+    if (chdir(cwd)) {
+        if (chdir("/")) {
+            perror("chdir_root");
+            return 1;
+        }
     }
 
     if (setresgid(gid, gid, gid)) {
