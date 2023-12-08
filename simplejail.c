@@ -12,6 +12,8 @@
 #define JAILDIR "/tmp/simplejail.root"
 #define SHELL "/bin/bash"
 
+// gcc simplejail.c -O2 -o /usr/bin/simplejail && chmod +s /usr/bin/simplejail
+
 // https://stackoverflow.com/questions/2336242/recursive-mkdir-system-call-on-unix
 static int mkdir_p(const char *path, int mode) {
     char *buf = strdup(path);
