@@ -85,8 +85,8 @@ int main() {
         return 1;
     }
 
-    char cwdbuf[PATH_MAX];
-    char* cwd = getcwd(cwdbuf, PATH_MAX);
+    char cwdbuf[4096];
+    char* cwd = getcwd(cwdbuf, 4096);
 
     struct passwd *pw = getpwuid(uid);
 
