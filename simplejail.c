@@ -62,7 +62,7 @@ static int mkdir_p(const char *path, int mode) {
     } \
 }
 
-int main() {
+int main(int argc, char** argv) {
     int uid = getuid();
     int gid = getgid();
     if (uid == 0 || gid == 0) {
@@ -128,7 +128,7 @@ int main() {
         return 1;
     }
 
-    execl(SHELL, SHELL, NULL);
+    execl(SHELL, argv, NULL);
 
     return 0;
 }
