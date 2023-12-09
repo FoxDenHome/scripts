@@ -99,6 +99,17 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    pid_t pid = fork();
+    if (pid == -1) {
+        perror("fork");
+        return 1;
+    }
+    if (pid > 0) {
+        int status;
+        waitpid(pid, &status, 0);
+        return status;
+    }
+
     if (mount("none", "/", NULL, MS_SILENT | MS_REC | MS_PRIVATE, NULL) == -1) {
         perror("mount_private_rec");
         return 1;
@@ -168,17 +179,6 @@ int main(int argc, char** argv) {
     if (setresuid(uid, uid, uid)) {
         perror("setresuid");
         return 1;
-    }
-
-    pid_t pid = fork();
-    if (pid == -1) {
-        perror("fork");
-        return 1;
-    }
-    if (pid > 0) {
-        int status;
-        waitpid(pid, &status, 0);
-        return status;
     }
 
     execv(SHELL, argv);
