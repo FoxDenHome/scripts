@@ -48,7 +48,7 @@ static int mkdir_p(const char *path, int mode) {
 #define mount_bind_mkdirfunc(src, mkdirfunc) { \
     if (access(src, F_OK) == 0) { \
         mkdirfunc(src); \
-        if (mount(src, src + 1, NULL, MS_SILENT | MS_BIND, NULL)) { \
+        if (mount(src, src + 1, NULL, MS_SILENT | MS_BIND | MS_PRIVATE, NULL)) { \
             perror("mount"); \
             return 1; \
         } \
@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
     char cwdbuf[4096];
     char* cwd = getcwd(cwdbuf, 4096);
 
-    if (unshare(CLONE_NEWNS | CLONE_FS | CLONE_FILES)) {
+    if (unshare(CLONE_NEWNS)) {
         perror("unshare");
         return 1;
     }
