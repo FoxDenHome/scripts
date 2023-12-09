@@ -84,14 +84,19 @@ int main(int argc, char** argv) {
     char cwdbuf[4096];
     char* cwd = getcwd(cwdbuf, 4096);
 
+    mkdir(JAILDIR, 0755);
+
     if (unshare(CLONE_NEWNS)) {
         perror("unshare");
         return 1;
     }
 
-    mkdir(JAILDIR, 0755);
+    if (mount("none", "/", NULL, MS_REC|MS_PRIVATE, NULL) == -1) {
+        perror("mount_private_rec");
+        return 1;
+    }
 
-    if (mount(NULL, JAILDIR, "tmpfs", MS_SILENT | MS_PRIVATE, NULL)) {
+    if (mount("none", JAILDIR, "tmpfs", MS_PRIVATE, NULL)) {
         perror("mount_tmp");
         return 1;
     }
