@@ -54,7 +54,7 @@ static int mkdir_p(const char *path, int mode) {
             perror("mount"); \
             return 1; \
         } \
-        if (mount(NULL, src + 1, NULL, MS_SILENT | MS_REMOUNT | flags, NULL)) { \
+        if (mount("none", src + 1, NULL, MS_SILENT | MS_BIND | MS_PRIVATE | MS_REMOUNT | flags, NULL)) { \
             perror("remount"); \
             return 1; \
         } \
@@ -97,7 +97,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    if (mount("none", "/", NULL, MS_REC | MS_PRIVATE, NULL) == -1) {
+    if (mount("none", "/", NULL, MS_SILENT | MS_REC | MS_PRIVATE, NULL) == -1) {
         perror("mount_private_rec");
         return 1;
     }
@@ -140,7 +140,7 @@ int main(int argc, char** argv) {
     mount_bind_mkdirp(pw->pw_dir, MS_NOSUID);
     mount_bind_mkdirp("/mnt/zhdd/nas", MOUNT_FLAGS_SYS);
 
-    if (mount(NULL, JAILDIR, NULL, MS_REMOUNT | MS_RDONLY | MS_NOSUID, NULL)) {
+    if (mount(NULL, JAILDIR, NULL, MS_SILENT | MS_REMOUNT | MS_RDONLY | MS_NOSUID, NULL)) {
         perror("remount_tmp");
         return 1;
     }
