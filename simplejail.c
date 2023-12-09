@@ -54,8 +54,8 @@ static int mkdir_p(const char *path, int mode) {
             perror("mount"); \
             return 1; \
         } \
-        if (mount("none", src + 1, NULL, MS_SILENT | MS_REMOUNT | flags, NULL)) { \
-            perror("mount"); \
+        if (mount(NULL, src + 1, NULL, MS_SILENT | MS_REMOUNT | flags, NULL)) { \
+            perror("remount"); \
             return 1; \
         } \
     } \
@@ -140,7 +140,7 @@ int main(int argc, char** argv) {
     mount_bind_mkdirp(pw->pw_dir, MS_NOSUID);
     mount_bind_mkdirp("/mnt/zhdd/nas", MOUNT_FLAGS_SYS);
 
-    if (mount("none", JAILDIR, NULL, MS_REMOUNT | MS_RDONLY | MS_NOSUID, NULL)) {
+    if (mount(NULL, JAILDIR, NULL, MS_REMOUNT | MS_RDONLY | MS_NOSUID, NULL)) {
         perror("remount_tmp");
         return 1;
     }
