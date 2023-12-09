@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
 
     mkdir(JAILDIR, 0755);
 
-    if (mount(NULL, JAILDIR, "tmpfs", 0, NULL)) {
+    if (mount(NULL, JAILDIR, "tmpfs", MS_SILENT | MS_PRIVATE, NULL)) {
         perror("mount_tmp");
         return 1;
     }
