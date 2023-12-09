@@ -96,6 +96,11 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    if (chmod(JAILDIR, 0755)) {
+        perror("chmod_jail");
+        return 1;
+    }
+
     if (chdir(JAILDIR)) {
         perror("chdir_jail");
         return 1;
