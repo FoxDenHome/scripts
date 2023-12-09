@@ -91,7 +91,12 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    if (mount("none", JAILDIR, "tmpfs", MS_PRIVATE, NULL)) {
+    if (mount("none", "/", NULL, MS_REC | MS_PRIVATE, NULL) == -1) {
+        perror("mount_private_rec");
+        return 1;
+    }
+
+    if (mount("none", JAILDIR, "tmpfs", MS_SILENT, NULL)) {
         perror("mount_tmp");
         return 1;
     }
