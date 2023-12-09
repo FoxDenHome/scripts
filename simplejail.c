@@ -94,20 +94,9 @@ int main(int argc, char** argv) {
 
     mkdir(JAILDIR, 0755);
 
-    if (unshare(CLONE_NEWNS | CLONE_FILES | CLONE_FS | CLONE_NEWIPC | CLONE_NEWPID | CLONE_NEWUTS)) {
+    if (unshare(CLONE_NEWNS | CLONE_FILES | CLONE_FS | CLONE_NEWIPC | CLONE_NEWUTS)) {
         perror("unshare");
         return 1;
-    }
-
-    pid_t pid = fork();
-    if (pid == -1) {
-        perror("fork");
-        return 1;
-    }
-    if (pid > 0) {
-        int status;
-        waitpid(pid, &status, 0);
-        return status;
     }
 
     if (mount("none", "/", NULL, MS_SILENT | MS_REC | MS_PRIVATE, NULL) == -1) {
@@ -146,11 +135,7 @@ int main(int argc, char** argv) {
 
     mkdir_check("/home");
 
-    mkdir_check("/proc");
-    if (mount("proc", "proc", "proc", MS_SILENT, NULL)) {
-        perror("mount_proc");
-        return 1;
-    }
+    mount_bind("/proc", 0);
     mount_bind("/sys", 0);
     mount_bind("/dev", 0);
 
