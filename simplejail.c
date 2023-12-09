@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
 
     mkdir(JAILDIR, 0755);
 
-    if (unshare(CLONE_NEWNS | CLONE_FILES | CLONE_FS | CLONE_NEWIPC)) {
+    if (unshare(CLONE_NEWNS | CLONE_FILES | CLONE_FS | CLONE_NEWIPC | CLONE_NEWPID | CLONE_NEWUTS)) {
         perror("unshare");
         return 1;
     }
@@ -162,6 +162,17 @@ int main(int argc, char** argv) {
     if (setresuid(uid, uid, uid)) {
         perror("setresuid");
         return 1;
+    }
+
+    pid_t pid = fork();
+    if (pid == -1) {
+        perror("fork");
+        return 1;
+    }
+    if (pid > 0) {
+        int status;
+        waitpid(pid, &status, 0);
+        return status;
     }
 
     execv(SHELL, argv);
