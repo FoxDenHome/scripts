@@ -129,6 +129,6 @@ int main(int argc, char** argv) {
     }
 
     execv(SHELL, argv);
-
-    return 0;
+    perror("execv");
+    return 1;
 }
