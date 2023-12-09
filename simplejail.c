@@ -181,6 +181,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    argv[0] = SHELL;
     execv(SHELL, argv);
     perror("execv");
     return 1;
