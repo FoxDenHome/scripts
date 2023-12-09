@@ -133,9 +133,9 @@ int main(int argc, char** argv) {
 
     mkdir_check("/home");
 
-    mount_bind("/proc");
-    mount_bind("/sys");
-    mount_bind("/dev");
+    mount_bind("/proc", 0);
+    mount_bind("/sys", 0);
+    mount_bind("/dev", 0);
 
     mount_bind_mkdirp(pw->pw_dir, MS_NOSUID);
     mount_bind_mkdirp("/mnt/zhdd/nas", MOUNT_FLAGS_SYS);
