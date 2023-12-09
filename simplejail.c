@@ -132,6 +132,7 @@ int main(int argc, char** argv) {
     mount_bind("/dev");
 
     mount_bind_mkdirp(pw->pw_dir);
+    mount_bind_mkdirp("/mnt/zhdd/nas");
 
     if (chroot(".")) {
         perror("chroot");
