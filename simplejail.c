@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
 
     mkdir(JAILDIR, 0755);
 
-    if (unshare(CLONE_NEWNS | CLONE_FILES | CLONE_FS | CLONE_NEWPID)) {
+    if (unshare(CLONE_NEWNS | CLONE_FILES | CLONE_FS | CLONE_NEWIPC)) {
         perror("unshare");
         return 1;
     }
