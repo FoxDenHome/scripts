@@ -140,7 +140,7 @@ int main(int argc, char** argv) {
     mount_bind_mkdirp(pw->pw_dir, MS_NOSUID);
     mount_bind_mkdirp("/mnt/zhdd/nas", MOUNT_FLAGS_SYS);
 
-    if (mount(NULL, JAILDIR, NULL, MS_SILENT | MS_REMOUNT | MS_RDONLY | MS_NOSUID, NULL)) {
+    if (mount(NULL, JAILDIR, NULL, MS_SILENT | MS_REMOUNT | MOUNT_FLAGS_SYS, NULL)) {
         perror("remount_tmp");
         return 1;
     }
