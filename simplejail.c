@@ -45,22 +45,33 @@ static int mkdir_p(const char *path, int mode) {
     return ret;
 }
 
-#define mount_bind(src) { \
+#define mount_bind_mkdirfunc(src, mkdirfunc) { \
     if (access(src, F_OK) == 0) { \
-        mkdir_check(src); \
+        mkdirfunc(src); \
         if (mount(src, src + 1, NULL, MS_SILENT | MS_BIND, NULL)) { \
             perror("mount"); \
             return 1; \
         } \
     } \
 }
+#define mount_bind(src) mount_bind_mkdirfunc(src, mkdir_check)
+#define mount_bind_mkdirp(src) mount_bind_mkdirfunc(src, mkdirp_check)
 
-#define mkdir_check(src) { \
-    if (mkdir_p(src + 1, 0755)) { \
+#define mkdir_chmod_check(src, mode) { \
+    if (mkdir(src + 1, mode)) { \
         perror("mkdir_p"); \
         return 1; \
     } \
 }
+#define mkdir_check(src) mkdir_chmod_check(src, 0755)
+
+#define mkdirp_chmod_check(src, mode) { \
+    if (mkdir_p(src + 1, mode)) { \
+        perror("mkdir_p"); \
+        return 1; \
+    } \
+}
+#define mkdirp_check(src) mkdirp_chmod_check(src, 0755)
 
 int main(int argc, char** argv) {
     int uid = getuid();
@@ -99,15 +110,18 @@ int main(int argc, char** argv) {
     mount_bind("/usr");
 
     mount_bind("/etc");
-    mkdir_check("/var");
-    mkdir_check("/tmp");
+
+    mode_t old_umask = umask(0);
+    mkdir_chmod_check("/tmp", 01777);
+    umask(old_umask);
+
     mkdir_check("/home");
 
     mount_bind("/proc");
     mount_bind("/sys");
     mount_bind("/dev");
 
-    mount_bind(pw->pw_dir);
+    mount_bind_mkdirp(pw->pw_dir);
 
     if (chroot(".")) {
         perror("chroot");
