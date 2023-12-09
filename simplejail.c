@@ -135,11 +135,7 @@ int main(int argc, char** argv) {
 
     mkdir_check("/home");
 
-    mkdir_check("/proc");
-    if (mount("proc", "proc", "proc", MS_SILENT, NULL)) {
-        perror("mount_proc");
-        return 1;
-    }
+    mount_bind("/proc", 0);
     mount_bind("/sys", 0);
     mount_bind("/dev", 0);
 
