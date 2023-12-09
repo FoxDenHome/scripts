@@ -45,17 +45,23 @@ static int mkdir_p(const char *path, int mode) {
     return ret;
 }
 
-#define mount_bind_mkdirfunc(src, mkdirfunc) { \
+#define MOUNT_FLAGS_SYS (MS_RDONLY | MS_NOSUID)
+
+#define mount_bind_mkdirfunc(src, flags, mkdirfunc) { \
     if (access(src, F_OK) == 0) { \
         mkdirfunc(src); \
         if (mount(src, src + 1, NULL, MS_SILENT | MS_BIND | MS_PRIVATE, NULL)) { \
             perror("mount"); \
             return 1; \
         } \
+        if (mount("none", src + 1, NULL, MS_SILENT | MS_REMOUNT | flags, NULL)) { \
+            perror("mount"); \
+            return 1; \
+        } \
     } \
 }
-#define mount_bind(src) mount_bind_mkdirfunc(src, mkdir_check)
-#define mount_bind_mkdirp(src) mount_bind_mkdirfunc(src, mkdirp_check)
+#define mount_bind(src, flags) mount_bind_mkdirfunc(src, flags, mkdir_check)
+#define mount_bind_mkdirp(src, flags) mount_bind_mkdirfunc(src, flags, mkdirp_check)
 
 #define mkdir_chmod_check(src, mode) { \
     if (mkdir(src + 1, mode)) { \
@@ -113,13 +119,13 @@ int main(int argc, char** argv) {
 
     struct passwd *pw = getpwuid(uid);
 
-    mount_bind("/bin");
-    mount_bind("/sbin");
-    mount_bind("/lib");
-    mount_bind("/lib64");
-    mount_bind("/usr");
+    mount_bind("/bin", MOUNT_FLAGS_SYS);
+    mount_bind("/sbin", MOUNT_FLAGS_SYS);
+    mount_bind("/lib", MOUNT_FLAGS_SYS);
+    mount_bind("/lib64", MOUNT_FLAGS_SYS);
+    mount_bind("/usr", MOUNT_FLAGS_SYS);
 
-    mount_bind("/etc");
+    mount_bind("/etc", MOUNT_FLAGS_SYS);
 
     mode_t old_umask = umask(0);
     mkdir_chmod_check("/tmp", 01777);
@@ -131,8 +137,13 @@ int main(int argc, char** argv) {
     mount_bind("/sys");
     mount_bind("/dev");
 
-    mount_bind_mkdirp(pw->pw_dir);
-    mount_bind_mkdirp("/mnt/zhdd/nas");
+    mount_bind_mkdirp(pw->pw_dir, MS_NOSUID);
+    mount_bind_mkdirp("/mnt/zhdd/nas", MOUNT_FLAGS_SYS);
+
+    if (mount("none", JAILDIR, NULL, MS_REMOUNT | MS_RDONLY | MS_NOSUID, NULL)) {
+        perror("remount_tmp");
+        return 1;
+    }
 
     if (chroot(".")) {
         perror("chroot");
