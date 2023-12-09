@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    execl(SHELL, argv, NULL);
+    execv(SHELL, argv, NULL);
 
     return 0;
 }
