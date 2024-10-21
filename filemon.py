@@ -13,7 +13,7 @@ def check_file(fname: str, get_contents: bool = False):
     mtime_metrics[fname] = info.st_mtime
     if get_contents:
         with open(fname) as file:
-            data_metrics[fname] = int(file.read().strip())
+            data_metrics[fname] = float(file.read().strip())
 
 def collect():
     mtime_metrics.clear()
