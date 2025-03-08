@@ -8,10 +8,6 @@ else
     echo 'SSH key for GitHub already exists.'
 fi
 
-echo 'Add the following key to FoxDenServers GitHub:'
-cat ~/.ssh/id_ed25519.github-foxdenhome.pub
-echo 'Link: https://github.com/settings/keys'
-
 if ! grep -qF github.com ~/.ssh/config; then
     echo 'Adding GitHub SSH config...'
     echo 'Host github.com' >> ~/.ssh/config
@@ -21,3 +17,12 @@ else
 fi
 
 git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+
+echo 'Add the following key to FoxDenServers GitHub:'
+cat ~/.ssh/id_ed25519.github-foxdenhome.pub
+echo 'Link: https://github.com/settings/keys'
+
+echo 'Will run ssh to confirm key is working and trust host keys'
+read -p 'Press key to continue... ' -n1 -s
+echo 'OK!'
+ssh git@github.com
